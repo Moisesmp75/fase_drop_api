@@ -37,15 +37,10 @@ export class TsAlumnoRepository implements AlumnoRepository {
       edad: alumno.getEdad(),
       grado: alumno.getGrado(),
       seccion: alumno.getSeccion(),
-      conducta: alumno.getConducta(),
       distrito: alumno.getDistrito(),
-      asistencia: alumno.getAsistencia(),
-      matematicas: alumno.getMatematicas(),
-      comunicacion: alumno.getComunicacion(),
-      ciencias_sociales: alumno.getCienciasSociales(),
-      cta: alumno.getCta(),
-      ingles: alumno.getIngles(),
-      prediccion: alumno.getPrediccion()
+      tipoPeriodo: alumno.getTipoPeriodo(),
+      valorPeriodo: alumno.getValorPeriodo(),
+      anio: alumno.getAnio()
     };
 
     await this.tableClient.insert(alumnoEntity);
@@ -56,17 +51,12 @@ export class TsAlumnoRepository implements AlumnoRepository {
       alumnoEntity.edad,
       alumnoEntity.grado,
       alumnoEntity.seccion,
-      alumnoEntity.conducta,
       alumnoEntity.distrito,
-      alumnoEntity.asistencia,
-      alumnoEntity.matematicas,
-      alumnoEntity.comunicacion,
-      alumnoEntity.ciencias_sociales,
-      alumnoEntity.cta,
-      alumnoEntity.ingles,
       alumnoEntity.id,
-      alumnoEntity.prediccion,
-      alumnoEntity.idUsuarioResponsable
+      alumnoEntity.idUsuarioResponsable,
+      alumnoEntity.tipoPeriodo,
+      alumnoEntity.valorPeriodo,
+      alumnoEntity.anio
     );
   }
 
@@ -85,17 +75,12 @@ export class TsAlumnoRepository implements AlumnoRepository {
         alumnoEntity.edad,
         alumnoEntity.grado,
         alumnoEntity.seccion,
-        alumnoEntity.conducta,
         alumnoEntity.distrito,
-        alumnoEntity.asistencia,
-        alumnoEntity.matematicas,
-        alumnoEntity.comunicacion,
-        alumnoEntity.ciencias_sociales,
-        alumnoEntity.cta,
-        alumnoEntity.ingles,
         alumnoEntity.id,
-        alumnoEntity.prediccion,
-        alumnoEntity.idUsuarioResponsable
+        alumnoEntity.idUsuarioResponsable,
+        alumnoEntity.tipoPeriodo,
+        alumnoEntity.valorPeriodo,
+        alumnoEntity.anio
       );
     } catch (error) {
       throw new Error("Error al buscar el alumno por ID");
@@ -117,17 +102,12 @@ export class TsAlumnoRepository implements AlumnoRepository {
         alumnoEntity.edad,
         alumnoEntity.grado,
         alumnoEntity.seccion,
-        alumnoEntity.conducta,
         alumnoEntity.distrito,
-        alumnoEntity.asistencia,
-        alumnoEntity.matematicas,
-        alumnoEntity.comunicacion,
-        alumnoEntity.ciencias_sociales,
-        alumnoEntity.cta,
-        alumnoEntity.ingles,
         alumnoEntity.id,
-        alumnoEntity.prediccion,
-        alumnoEntity.idUsuarioResponsable
+        alumnoEntity.idUsuarioResponsable,
+        alumnoEntity.tipoPeriodo,
+        alumnoEntity.valorPeriodo,
+        alumnoEntity.anio
       ));
     } catch (error) {
       throw new Error("Error al buscar alumnos por nombre y apellido");
@@ -149,17 +129,12 @@ export class TsAlumnoRepository implements AlumnoRepository {
         alumnoEntity.edad,
         alumnoEntity.grado,
         alumnoEntity.seccion,
-        alumnoEntity.conducta,
         alumnoEntity.distrito,
-        alumnoEntity.asistencia,
-        alumnoEntity.matematicas,
-        alumnoEntity.comunicacion,
-        alumnoEntity.ciencias_sociales,
-        alumnoEntity.cta,
-        alumnoEntity.ingles,
         alumnoEntity.id,
-        alumnoEntity.prediccion,
-        alumnoEntity.idUsuarioResponsable
+        alumnoEntity.idUsuarioResponsable,
+        alumnoEntity.tipoPeriodo,
+        alumnoEntity.valorPeriodo,
+        alumnoEntity.anio
       ));
     } catch (error) {
       throw new Error("Error al buscar alumnos por usuario responsable");
@@ -178,15 +153,10 @@ export class TsAlumnoRepository implements AlumnoRepository {
         edad: alumno.getEdad(),
         grado: alumno.getGrado(),
         seccion: alumno.getSeccion(),
-        conducta: alumno.getConducta(),
         distrito: alumno.getDistrito(),
-        asistencia: alumno.getAsistencia(),
-        matematicas: alumno.getMatematicas(),
-        comunicacion: alumno.getComunicacion(),
-        ciencias_sociales: alumno.getCienciasSociales(),
-        cta: alumno.getCta(),
-        ingles: alumno.getIngles(),
-        prediccion: alumno.getPrediccion()
+        tipoPeriodo: alumno.getTipoPeriodo(),
+        valorPeriodo: alumno.getValorPeriodo(),
+        anio: alumno.getAnio()
       };
 
       await this.tableClient.update(alumnoEntity);
@@ -213,15 +183,10 @@ export class TsAlumnoRepository implements AlumnoRepository {
         edad: alumno.getEdad(),
         grado: alumno.getGrado(),
         seccion: alumno.getSeccion(),
-        conducta: alumno.getConducta(),
         distrito: alumno.getDistrito(),
-        asistencia: alumno.getAsistencia(),
-        matematicas: alumno.getMatematicas(),
-        comunicacion: alumno.getComunicacion(),
-        ciencias_sociales: alumno.getCienciasSociales(),
-        cta: alumno.getCta(),
-        ingles: alumno.getIngles(),
-        prediccion: alumno.getPrediccion()
+        tipoPeriodo: alumno.getTipoPeriodo(),
+        valorPeriodo: alumno.getValorPeriodo(),
+        anio: alumno.getAnio()
       };
 
       await this.tableClient.delete(alumnoEntity);
@@ -239,17 +204,12 @@ export class TsAlumnoRepository implements AlumnoRepository {
         alumnoEntity.edad,
         alumnoEntity.grado,
         alumnoEntity.seccion,
-        alumnoEntity.conducta,
         alumnoEntity.distrito,
-        alumnoEntity.asistencia,
-        alumnoEntity.matematicas,
-        alumnoEntity.comunicacion,
-        alumnoEntity.ciencias_sociales,
-        alumnoEntity.cta,
-        alumnoEntity.ingles,
         alumnoEntity.id,
-        alumnoEntity.prediccion,
-        alumnoEntity.idUsuarioResponsable
+        alumnoEntity.idUsuarioResponsable,
+        alumnoEntity.tipoPeriodo,
+        alumnoEntity.valorPeriodo,
+        alumnoEntity.anio
       ));
     } catch (error) {
       throw new Error("Error al obtener todos los alumnos");

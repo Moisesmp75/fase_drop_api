@@ -18,26 +18,20 @@ export class CreateAlumnoUseCase {
   }
 
   async execute(command: CreateAlumnoCommand): Promise<Alumno> {
-    console.log("Comando recibido: ", command);
     const alumno = new Alumno(
       command.nombre,
       command.apellido,
       command.edad,
       command.grado,
       command.seccion,
-      command.conducta,
       command.distrito,
-      command.asistencia || 0,
-      command.matematicas || 0,
-      command.comunicacion || 0,
-      command.ciencias_sociales || 0,
-      command.cta || 0,
-      command.ingles || 0,
-      null,
-      command.prediccion || 0,
-      command.idUsuarioResponsable
+      null, // id
+      command.idUsuarioResponsable,
+      command.tipoPeriodo,
+      command.valorPeriodo,
+      command.anio
     );
-    console.log("Alumno creado: ", alumno);
+
     return await this.alumnoRepository.create(alumno);
   }
 } 

@@ -1,26 +1,10 @@
 import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { CreateAlumnoUseCase } from "../../../application/use-cases/alumno/create-alumno.use-case";
-import { CreateAlumnoCommand } from "../../../domain/model/commands/alumno/create-alumno.command";
+import { CreateNotaUseCase } from "../../../application/use-cases/nota/create-nota.use-case";
+import { CreateNotaCommand } from "../../../domain/model/commands/nota/create-nota.command";
 import { JwtTokenService } from "../../../application/internal/outbound-services/jwt-token.service";
 import { TipoPeriodo } from "../../../domain/model/enums/periodo.enum";
 
-// interface CreateAlumnoRequest {
-//   nombre: string;
-//   apellido: string;
-//   edad: number;
-//   grado: number;
-//   seccion: string;
-//   conducta: number;
-//   distrito: string;
-//   asistencia?: number;
-//   matematicas?: number;
-//   comunicacion?: number;
-//   ciencias_sociales?: number;
-//   cta?: number;
-//   ingles?: number;
-// }
-
-export const CreateAlumnoFunction = async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
+export const CreateNotaFunction = async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -45,18 +29,20 @@ export const CreateAlumnoFunction = async (request: HttpRequest, context: Invoca
       };
     }
 
-    const body = await request.json() as CreateAlumnoCommand;
+    const body = await request.json() as CreateNotaCommand;
     
     const requiredFields = [
-      'nombre', 
-      'apellido', 
-      'edad', 
-      'grado', 
-      'seccion', 
-      'distrito',
+      'alumnoId',
       'tipoPeriodo',
       'valorPeriodo',
-      'anio'
+      'anio',
+      'matematicas',
+      'comunicacion',
+      'ciencias_sociales',
+      'cta',
+      'ingles',
+      'asistencia',
+      'conducta'
     ];
     const missingFields = requiredFields.filter(field => !body[field]);
     
@@ -79,28 +65,27 @@ export const CreateAlumnoFunction = async (request: HttpRequest, context: Invoca
       };
     }
 
-    const createAlumnoUseCase = new CreateAlumnoUseCase();
-    
-    const alumno = await createAlumnoUseCase.execute({
-      ...body,
-      idUsuarioResponsable: decodedToken.user_id
-    });
+    const createNotaUseCase = new CreateNotaUseCase();
+    const nota = await createNotaUseCase.execute(body);
 
     return {
       status: 201,
       jsonBody: {
-        message: "Alumno registrado exitosamente",
-        alumno: {
-          id: alumno.getId(),
-          nombre: alumno.getNombre(),
-          apellido: alumno.getApellido(),
-          edad: alumno.getEdad(),
-          grado: alumno.getGrado(),
-          seccion: alumno.getSeccion(),
-          distrito: alumno.getDistrito(),
-          tipoPeriodo: alumno.getTipoPeriodo(),
-          valorPeriodo: alumno.getValorPeriodo(),
-          anio: alumno.getAnio()
+        message: "Nota registrada exitosamente",
+        nota: {
+          id: nota.getId(),
+          alumnoId: nota.getAlumnoId(),
+          tipoPeriodo: nota.getTipoPeriodo(),
+          valorPeriodo: nota.getValorPeriodo(),
+          anio: nota.getAnio(),
+          matematicas: nota.getMatematicas(),
+          comunicacion: nota.getComunicacion(),
+          ciencias_sociales: nota.getCienciasSociales(),
+          cta: nota.getCta(),
+          ingles: nota.getIngles(),
+          asistencia: nota.getAsistencia(),
+          conducta: nota.getConducta(),
+          prediccion: nota.getPrediccion()
         }
       }
     };

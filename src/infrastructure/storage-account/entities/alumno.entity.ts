@@ -1,4 +1,5 @@
 import { BaseEntity } from "./base.entity";
+import { TipoPeriodo } from "../../../domain/model/enums/periodo.enum";
 
 export interface AlumnoEntity extends BaseEntity {
   id: string;
@@ -8,13 +9,8 @@ export interface AlumnoEntity extends BaseEntity {
   edad: number;
   grado: number;
   seccion: string;
-  conducta: number;
   distrito: string;
-  asistencia: number;
-  matematicas: number;
-  comunicacion: number;
-  ciencias_sociales: number;
-  cta: number;
-  ingles: number;
-  prediccion: number;
+  tipoPeriodo: TipoPeriodo;
+  valorPeriodo: number;
+  anio: number;
 } 

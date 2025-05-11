@@ -6,8 +6,7 @@ export class AzureTableClient {
 
   constructor(accountName: string, accountKey: string, tableName: string) {
     const credential = new AzureNamedKeyCredential(accountName, accountKey);
-    // const url = `https://${accountName}.table.core.windows.net`;
-    const url = `http://127.0.0.1:10002/${accountName}`;
+    const url = `https://${accountName}.table.core.windows.net`;
     this.client = new TableClient(url, tableName, credential, { allowInsecureConnection: true });
     
     this.ensureTableExists().catch((err) => {
