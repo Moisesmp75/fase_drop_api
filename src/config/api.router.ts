@@ -9,8 +9,9 @@ import { GetNotasFunction } from "../interfaces/functions/nota/get-notas.functio
 
 app.http('RegistrarUsuario', { methods: ['POST'], authLevel: 'anonymous', route: 'user', handler: CreateUserFunction });
 app.http('Login', { methods: ['POST'], authLevel: 'anonymous', route: 'auth/sign-in', handler: SignInFunction });
-app.http('CrearAlumno', { methods: ['POST'], authLevel: 'function', route: 'alumno', handler: CreateAlumnoFunction });
-app.http('ObtenerAlumnoPorId', { methods: ['GET'], authLevel: 'function', route: 'alumno/{id}', handler: GetAlumnoByIdFunction });
-app.http('LitarAlumnos', { methods: ['GET'], authLevel: 'function', route: 'alumno', handler: GetAlumnosFunction });
-app.http('RegistrarNotaAlumno', { methods: ['POST'], authLevel: 'function', route: 'nota', handler: CreateNotaFunction });
-app.http('ObtenerNotasAlumnos', { methods: ['GET'], authLevel: 'function', route: 'nota', handler: GetNotasFunction });
+app.http('CrearAlumno', { methods: ['POST'], authLevel: 'anonymous', route: 'alumno', handler: CreateAlumnoFunction });
+app.http('ObtenerAlumnoPorId', { methods: ['GET'], authLevel: 'anonymous', route: 'alumno/{id}', handler: GetAlumnoByIdFunction });
+app.http('ListarAlumnos', { methods: ['GET'], authLevel: 'anonymous', route: 'alumno', handler: GetAlumnosFunction });
+app.http('RegistrarNotaAlumno', { methods: ['POST'], authLevel: 'anonymous', route: 'nota', handler: CreateNotaFunction });
+app.http('ObtenerNotasAlumnos', { methods: ['GET'], authLevel: 'anonymous', route: 'nota', handler: GetNotasFunction });
+
