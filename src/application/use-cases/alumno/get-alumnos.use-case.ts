@@ -21,8 +21,6 @@ export class GetAlumnosUseCase {
     const alumnos = await this.alumnoRepository.findByUsuarioResponsable(query.idUsuarioResponsable);
     
     return alumnos.filter(alumno => {
-      if (query.grado && alumno.getGrado() !== query.grado) return false;
-      if (query.seccion && alumno.getSeccion() !== query.seccion) return false;
       if (query.distrito && alumno.getDistrito() !== query.distrito) return false;
       return true;
     });

@@ -56,13 +56,9 @@ export const GetAlumnoByIdFunction = async (request: HttpRequest, context: Invoc
         id: alumno.getId(),
         nombre: alumno.getNombre(),
         apellido: alumno.getApellido(),
+        dni: alumno.getDni(),
         edad: alumno.getEdad(),
-        grado: alumno.getGrado(),
-        seccion: alumno.getSeccion(),
-        distrito: alumno.getDistrito(),
-        tipoPeriodo: alumno.getTipoPeriodo(),
-        valorPeriodo: alumno.getValorPeriodo(),
-        anio: alumno.getAnio()
+        distrito: alumno.getDistrito()
       }
     };
   } catch (error) {

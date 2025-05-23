@@ -36,20 +36,24 @@ export class CreateNotaUseCase {
       throw new Error("El alumno no existe");
     }
 
-    // Verificar que no exista una nota para el mismo período
+    // Verificar que no exista una nota para el mismo alumno, año, grado, sección y período
     const notasExistentes = await this.notaRepository.findByQuery({
       alumnoId: command.alumnoId,
       tipoPeriodo: command.tipoPeriodo,
       valorPeriodo: command.valorPeriodo,
-      anio: command.anio
+      anio: command.anio,
+      grado: command.grado,
+      seccion: command.seccion
     });
 
     if (notasExistentes.length > 0) {
-      throw new Error("Ya existe una nota para este período");
+      throw new Error("Ya existe una nota para este alumno en el mismo año, grado, sección y período");
     }
 
     const nota = new Nota(
       command.alumnoId,
+      command.grado,
+      command.seccion,
       command.tipoPeriodo,
       command.valorPeriodo,
       command.anio,

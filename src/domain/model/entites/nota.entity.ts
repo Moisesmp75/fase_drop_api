@@ -1,10 +1,14 @@
 import { NotaAcademica } from "../value-objects/nota-academica";
 import { Periodo } from "../value-objects/periodo";
 import { TipoPeriodo } from "../enums/periodo.enum";
+import { Grado } from "../value-objects/grado";
+import { Seccion } from "../value-objects/seccion";
 
 export class Nota {
   private readonly id: string;
   private readonly alumnoId: string;
+  private readonly grado: Grado;
+  private readonly seccion: Seccion;
   private readonly periodo: Periodo;
   private readonly matematicas: NotaAcademica;
   private readonly comunicacion: NotaAcademica;
@@ -17,6 +21,8 @@ export class Nota {
 
   constructor(
     alumnoId: string,
+    grado: number,
+    seccion: string,
     tipoPeriodo: TipoPeriodo,
     valorPeriodo: number,
     anio: number,
@@ -32,6 +38,8 @@ export class Nota {
   ) {
     this.id = id;
     this.alumnoId = alumnoId;
+    this.grado = new Grado(grado);
+    this.seccion = new Seccion(seccion);
     this.periodo = new Periodo(tipoPeriodo, valorPeriodo, anio);
     this.matematicas = new NotaAcademica(matematicas);
     this.comunicacion = new NotaAcademica(comunicacion);
@@ -45,6 +53,8 @@ export class Nota {
 
   public getId(): string { return this.id; }
   public getAlumnoId(): string { return this.alumnoId; }
+  public getGrado(): number { return this.grado.get(); }
+  public getSeccion(): string { return this.seccion.get(); }
   public getTipoPeriodo(): TipoPeriodo { return this.periodo.getTipo(); }
   public getValorPeriodo(): number { return this.periodo.getValor(); }
   public getAnio(): number { return this.periodo.getAnio(); }

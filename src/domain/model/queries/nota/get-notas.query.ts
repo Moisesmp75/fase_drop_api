@@ -5,4 +5,6 @@ export interface GetNotasQuery {
   readonly tipoPeriodo?: TipoPeriodo;
   readonly valorPeriodo?: number;
   readonly anio?: number;
+  readonly grado?: number;
+  readonly seccion?: string;
 } 

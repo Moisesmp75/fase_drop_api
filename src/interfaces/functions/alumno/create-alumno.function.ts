@@ -2,23 +2,19 @@ import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functio
 import { CreateAlumnoUseCase } from "../../../application/use-cases/alumno/create-alumno.use-case";
 import { CreateAlumnoCommand } from "../../../domain/model/commands/alumno/create-alumno.command";
 import { JwtTokenService } from "../../../application/internal/outbound-services/jwt-token.service";
-import { TipoPeriodo } from "../../../domain/model/enums/periodo.enum";
 
-// interface CreateAlumnoRequest {
-//   nombre: string;
-//   apellido: string;
-//   edad: number;
-//   grado: number;
-//   seccion: string;
-//   conducta: number;
-//   distrito: string;
-//   asistencia?: number;
-//   matematicas?: number;
-//   comunicacion?: number;
-//   ciencias_sociales?: number;
-//   cta?: number;
-//   ingles?: number;
-// }
+interface CreateAlumnoRequest {
+  nombre: string;
+  apellido: string;
+  dni: string;
+  edad: number;
+  distrito: string;
+  grado?: number;
+  seccion?: string;
+  tipoPeriodo?: string;
+  valorPeriodo?: number;
+  anio?: number;
+}
 
 export const CreateAlumnoFunction = async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
   try {
@@ -45,20 +41,26 @@ export const CreateAlumnoFunction = async (request: HttpRequest, context: Invoca
       };
     }
 
-    const body = await request.json() as CreateAlumnoCommand;
+    const body = await request.json() as CreateAlumnoRequest;
+    
+    // Extraer solo los campos necesarios para crear un alumno
+    const alumnoData: CreateAlumnoCommand = {
+      nombre: body.nombre,
+      apellido: body.apellido,
+      dni: body.dni,
+      edad: body.edad,
+      distrito: body.distrito,
+      idUsuarioResponsable: decodedToken.user_id
+    };
     
     const requiredFields = [
       'nombre', 
       'apellido', 
+      'dni',
       'edad', 
-      'grado', 
-      'seccion', 
-      'distrito',
-      'tipoPeriodo',
-      'valorPeriodo',
-      'anio'
+      'distrito'
     ];
-    const missingFields = requiredFields.filter(field => !body[field]);
+    const missingFields = requiredFields.filter(field => !alumnoData[field]);
     
     if (missingFields.length > 0) {
       return {
@@ -69,22 +71,8 @@ export const CreateAlumnoFunction = async (request: HttpRequest, context: Invoca
       };
     }
 
-    // Validar que tipoPeriodo sea un valor válido del enum
-    if (!Object.values(TipoPeriodo).includes(body.tipoPeriodo)) {
-      return {
-        status: 400,
-        jsonBody: {
-          message: `El tipo de período debe ser ${Object.values(TipoPeriodo).join(' o ')}`
-        }
-      };
-    }
-
     const createAlumnoUseCase = new CreateAlumnoUseCase();
-    
-    const alumno = await createAlumnoUseCase.execute({
-      ...body,
-      idUsuarioResponsable: decodedToken.user_id
-    });
+    const alumno = await createAlumnoUseCase.execute(alumnoData);
 
     return {
       status: 201,
@@ -94,13 +82,9 @@ export const CreateAlumnoFunction = async (request: HttpRequest, context: Invoca
           id: alumno.getId(),
           nombre: alumno.getNombre(),
           apellido: alumno.getApellido(),
+          dni: alumno.getDni(),
           edad: alumno.getEdad(),
-          grado: alumno.getGrado(),
-          seccion: alumno.getSeccion(),
-          distrito: alumno.getDistrito(),
-          tipoPeriodo: alumno.getTipoPeriodo(),
-          valorPeriodo: alumno.getValorPeriodo(),
-          anio: alumno.getAnio()
+          distrito: alumno.getDistrito()
         }
       }
     };

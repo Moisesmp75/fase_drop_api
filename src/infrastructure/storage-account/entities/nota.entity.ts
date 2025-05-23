@@ -4,6 +4,8 @@ import { TipoPeriodo } from "../../../domain/model/enums/periodo.enum";
 export interface NotaEntity extends BaseEntity {
   id: string;
   alumnoId: string;
+  grado: number;
+  seccion: string;
   tipoPeriodo: TipoPeriodo;
   valorPeriodo: number;
   anio: number;

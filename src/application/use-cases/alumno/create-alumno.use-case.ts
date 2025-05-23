@@ -18,18 +18,20 @@ export class CreateAlumnoUseCase {
   }
 
   async execute(command: CreateAlumnoCommand): Promise<Alumno> {
+    // Verificar si ya existe un alumno con el mismo DNI
+    const alumnoExistente = await this.alumnoRepository.findByDni(command.dni);
+
+    if (alumnoExistente) {
+      throw new Error(`Ya existe un alumno registrado con el DNI ${command.dni}`);
+    }
+
     const alumno = new Alumno(
       command.nombre,
       command.apellido,
+      command.dni,
       command.edad,
-      command.grado,
-      command.seccion,
       command.distrito,
-      null, // id
-      command.idUsuarioResponsable,
-      command.tipoPeriodo,
-      command.valorPeriodo,
-      command.anio
+      command.idUsuarioResponsable
     );
 
     return await this.alumnoRepository.create(alumno);

@@ -27,14 +27,10 @@ export const GetAlumnosFunction = async (request: HttpRequest, context: Invocati
       };
     }
 
-    const grado = request.query.get('grado');
-    const seccion = request.query.get('seccion');
     const distrito = request.query.get('distrito');
 
     const getAlumnosUseCase = new GetAlumnosUseCase();
     const alumnos = await getAlumnosUseCase.execute({
-      grado: grado ? parseInt(grado) : undefined,
-      seccion: seccion || undefined,
       distrito: distrito || undefined,
       idUsuarioResponsable: decodedToken.user_id
     });
@@ -43,13 +39,9 @@ export const GetAlumnosFunction = async (request: HttpRequest, context: Invocati
       id: alumno.getId(),
       nombre: alumno.getNombre(),
       apellido: alumno.getApellido(),
+      dni: alumno.getDni(),
       edad: alumno.getEdad(),
-      grado: alumno.getGrado(),
-      seccion: alumno.getSeccion(),
-      distrito: alumno.getDistrito(),
-      tipoPeriodo: alumno.getTipoPeriodo(),
-      valorPeriodo: alumno.getValorPeriodo(),
-      anio: alumno.getAnio()
+      distrito: alumno.getDistrito()
     }));
 
     return {

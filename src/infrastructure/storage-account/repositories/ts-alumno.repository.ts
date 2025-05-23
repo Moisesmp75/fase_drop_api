@@ -17,8 +17,8 @@ export class TsAlumnoRepository implements AlumnoRepository {
     await this.tableClient.ensureTableExists();
   }
 
-  private generatePartitionKey(idUsuarioResponsable: string, grado: number): string {
-    return `${idUsuarioResponsable}_${grado}`;
+  private generatePartitionKey(idUsuarioResponsable: string): string {
+    return idUsuarioResponsable;
   }
 
   private generateRowKey(nombre: string, apellido: string): string {
@@ -28,19 +28,15 @@ export class TsAlumnoRepository implements AlumnoRepository {
 
   async create(alumno: Alumno): Promise<Alumno> {
     const alumnoEntity: AlumnoEntity = {
-      partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable(), alumno.getGrado()),
+      partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
       rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
       id: uuidv4(),
       idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
       nombre: alumno.getNombre(),
       apellido: alumno.getApellido(),
+      dni: alumno.getDni(),
       edad: alumno.getEdad(),
-      grado: alumno.getGrado(),
-      seccion: alumno.getSeccion(),
-      distrito: alumno.getDistrito(),
-      tipoPeriodo: alumno.getTipoPeriodo(),
-      valorPeriodo: alumno.getValorPeriodo(),
-      anio: alumno.getAnio()
+      distrito: alumno.getDistrito()
     };
 
     await this.tableClient.insert(alumnoEntity);
@@ -48,15 +44,11 @@ export class TsAlumnoRepository implements AlumnoRepository {
     return new Alumno(
       alumnoEntity.nombre,
       alumnoEntity.apellido,
+      alumnoEntity.dni,
       alumnoEntity.edad,
-      alumnoEntity.grado,
-      alumnoEntity.seccion,
       alumnoEntity.distrito,
-      alumnoEntity.id,
       alumnoEntity.idUsuarioResponsable,
-      alumnoEntity.tipoPeriodo,
-      alumnoEntity.valorPeriodo,
-      alumnoEntity.anio
+      alumnoEntity.id
     );
   }
 
@@ -72,15 +64,11 @@ export class TsAlumnoRepository implements AlumnoRepository {
       return new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
+        alumnoEntity.dni,
         alumnoEntity.edad,
-        alumnoEntity.grado,
-        alumnoEntity.seccion,
         alumnoEntity.distrito,
-        alumnoEntity.id,
         alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.tipoPeriodo,
-        alumnoEntity.valorPeriodo,
-        alumnoEntity.anio
+        alumnoEntity.id
       );
     } catch (error) {
       throw new Error("Error al buscar el alumno por ID");
@@ -99,15 +87,11 @@ export class TsAlumnoRepository implements AlumnoRepository {
       return result.map(alumnoEntity => new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
+        alumnoEntity.dni,
         alumnoEntity.edad,
-        alumnoEntity.grado,
-        alumnoEntity.seccion,
         alumnoEntity.distrito,
-        alumnoEntity.id,
         alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.tipoPeriodo,
-        alumnoEntity.valorPeriodo,
-        alumnoEntity.anio
+        alumnoEntity.id
       ));
     } catch (error) {
       throw new Error("Error al buscar alumnos por nombre y apellido");
@@ -116,7 +100,7 @@ export class TsAlumnoRepository implements AlumnoRepository {
 
   async findByUsuarioResponsable(idUsuarioResponsable: string): Promise<Alumno[]> {
     try {
-      const query = `PartitionKey ge '${idUsuarioResponsable}_' and PartitionKey lt '${idUsuarioResponsable}_~'`;
+      const query = `PartitionKey eq '${idUsuarioResponsable}'`;
       const result = await this.tableClient.query<AlumnoEntity>(query);
       
       if (!result || result.length === 0) {
@@ -126,15 +110,11 @@ export class TsAlumnoRepository implements AlumnoRepository {
       return result.map(alumnoEntity => new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
+        alumnoEntity.dni,
         alumnoEntity.edad,
-        alumnoEntity.grado,
-        alumnoEntity.seccion,
         alumnoEntity.distrito,
-        alumnoEntity.id,
         alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.tipoPeriodo,
-        alumnoEntity.valorPeriodo,
-        alumnoEntity.anio
+        alumnoEntity.id
       ));
     } catch (error) {
       throw new Error("Error al buscar alumnos por usuario responsable");
@@ -144,19 +124,15 @@ export class TsAlumnoRepository implements AlumnoRepository {
   async update(alumno: Alumno): Promise<Alumno> {
     try {
       const alumnoEntity: AlumnoEntity = {
-        partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable(), alumno.getGrado()),
+        partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
         rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
         id: alumno.getId(),
         idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
         nombre: alumno.getNombre(),
         apellido: alumno.getApellido(),
+        dni: alumno.getDni(),
         edad: alumno.getEdad(),
-        grado: alumno.getGrado(),
-        seccion: alumno.getSeccion(),
-        distrito: alumno.getDistrito(),
-        tipoPeriodo: alumno.getTipoPeriodo(),
-        valorPeriodo: alumno.getValorPeriodo(),
-        anio: alumno.getAnio()
+        distrito: alumno.getDistrito()
       };
 
       await this.tableClient.update(alumnoEntity);
@@ -174,19 +150,15 @@ export class TsAlumnoRepository implements AlumnoRepository {
       }
 
       const alumnoEntity: AlumnoEntity = {
-        partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable(), alumno.getGrado()),
+        partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
         rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
         id: alumno.getId(),
         idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
         nombre: alumno.getNombre(),
         apellido: alumno.getApellido(),
+        dni: alumno.getDni(),
         edad: alumno.getEdad(),
-        grado: alumno.getGrado(),
-        seccion: alumno.getSeccion(),
-        distrito: alumno.getDistrito(),
-        tipoPeriodo: alumno.getTipoPeriodo(),
-        valorPeriodo: alumno.getValorPeriodo(),
-        anio: alumno.getAnio()
+        distrito: alumno.getDistrito()
       };
 
       await this.tableClient.delete(alumnoEntity);
@@ -201,18 +173,37 @@ export class TsAlumnoRepository implements AlumnoRepository {
       return result.map(alumnoEntity => new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
+        alumnoEntity.dni,
         alumnoEntity.edad,
-        alumnoEntity.grado,
-        alumnoEntity.seccion,
         alumnoEntity.distrito,
-        alumnoEntity.id,
         alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.tipoPeriodo,
-        alumnoEntity.valorPeriodo,
-        alumnoEntity.anio
+        alumnoEntity.id
       ));
     } catch (error) {
       throw new Error("Error al obtener todos los alumnos");
+    }
+  }
+
+  async findByDni(dni: string): Promise<Alumno> {
+    try {
+      const result = await this.tableClient.query<AlumnoEntity>(`dni eq '${dni}'`);
+      
+      if (!result || result.length === 0) {
+        return null;
+      }
+
+      const alumnoEntity = result[0];
+      return new Alumno(
+        alumnoEntity.nombre,
+        alumnoEntity.apellido,
+        alumnoEntity.dni,
+        alumnoEntity.edad,
+        alumnoEntity.distrito,
+        alumnoEntity.idUsuarioResponsable,
+        alumnoEntity.id
+      );
+    } catch (error) {
+      throw new Error("Error al buscar el alumno por DNI");
     }
   }
 } 
