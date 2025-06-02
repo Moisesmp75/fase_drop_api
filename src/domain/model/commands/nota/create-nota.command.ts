@@ -14,5 +14,5 @@ export interface CreateNotaCommand {
   ingles: number;
   asistencia: number;
   conducta: number;
-  prediccion?: number;
+  prediccion?: boolean;
 } 

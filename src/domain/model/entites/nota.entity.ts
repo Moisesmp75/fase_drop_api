@@ -17,7 +17,7 @@ export class Nota {
   private readonly ingles: NotaAcademica;
   private readonly asistencia: NotaAcademica;
   private readonly conducta: NotaAcademica;
-  private readonly prediccion: number;
+  private readonly prediccion: boolean;
 
   constructor(
     alumnoId: string,
@@ -33,7 +33,7 @@ export class Nota {
     ingles: number,
     asistencia: number,
     conducta: number,
-    prediccion: number = null,
+    prediccion: boolean = false,
     id: string = null
   ) {
     this.id = id;
@@ -65,5 +65,5 @@ export class Nota {
   public getIngles(): number { return this.ingles.get(); }
   public getAsistencia(): number { return this.asistencia.get(); }
   public getConducta(): number { return this.conducta.get(); }
-  public getPrediccion(): number { return this.prediccion; }
+  public getPrediccion(): boolean { return this.prediccion; }
 } 

@@ -16,5 +16,5 @@ export interface NotaEntity extends BaseEntity {
   ingles: number;
   asistencia: number;
   conducta: number;
-  prediccion: number;
+  prediccion: boolean;
 } 

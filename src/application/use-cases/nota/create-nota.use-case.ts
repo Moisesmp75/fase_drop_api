@@ -4,12 +4,18 @@ import { NotaRepository } from "../../../domain/repositories/nota.repository";
 import { TsNotaRepository } from "../../../infrastructure/storage-account/repositories/ts-nota.repository";
 import { AlumnoRepository } from "../../../domain/repositories/alumno.repository";
 import { TsAlumnoRepository } from "../../../infrastructure/storage-account/repositories/ts-alumno.repository";
+import { PredictionService } from "../../internal/outbound-services/prediction.service";
 
 export class CreateNotaUseCase {
   private readonly notaRepository: NotaRepository;
   private readonly alumnoRepository: AlumnoRepository;
+  private readonly predictionService: PredictionService;
 
-  constructor(notaRepository: NotaRepository = null, alumnoRepository: AlumnoRepository = null) {
+  constructor(
+    notaRepository: NotaRepository = null, 
+    alumnoRepository: AlumnoRepository = null,
+    predictionService: PredictionService = null
+  ) {
     if (!notaRepository) {
       this.notaRepository = new TsNotaRepository(
         process.env["StorageAccountName"],
@@ -27,6 +33,8 @@ export class CreateNotaUseCase {
     } else {
       this.alumnoRepository = alumnoRepository;
     }
+
+    this.predictionService = predictionService || new PredictionService();
   }
 
   async execute(command: CreateNotaCommand): Promise<Nota> {
@@ -50,6 +58,20 @@ export class CreateNotaUseCase {
       throw new Error("Ya existe una nota para este alumno en el mismo año, grado, sección y período");
     }
 
+    // Obtener la predicción del servicio externo
+    console.log("Predicción del servicio externo");
+    const prediccion = await this.predictionService.getPrediction({
+      edad: alumno.getEdad(),
+      grado: command.grado,
+      conducta: command.conducta,
+      asistencia: command.asistencia,
+      matematicas: command.matematicas,
+      comunicacion: command.comunicacion,
+      ciencias_sociales: command.ciencias_sociales,
+      cta: command.cta,
+      ingles: command.ingles
+    });
+    console.log("Predicción del servicio externo", prediccion);
     const nota = new Nota(
       command.alumnoId,
       command.grado,
@@ -64,7 +86,7 @@ export class CreateNotaUseCase {
       command.ingles,
       command.asistencia,
       command.conducta,
-      command.prediccion
+      prediccion
     );
 
     return await this.notaRepository.create(nota);
