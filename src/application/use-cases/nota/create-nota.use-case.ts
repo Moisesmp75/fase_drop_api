@@ -58,8 +58,6 @@ export class CreateNotaUseCase {
       throw new Error("Ya existe una nota para este alumno en el mismo año, grado, sección y período");
     }
 
-    // Obtener la predicción del servicio externo
-    console.log("Predicción del servicio externo");
     const prediccion = await this.predictionService.getPrediction({
       edad: alumno.getEdad(),
       grado: command.grado,
@@ -71,7 +69,7 @@ export class CreateNotaUseCase {
       cta: command.cta,
       ingles: command.ingles
     });
-    console.log("Predicción del servicio externo", prediccion);
+
     const nota = new Nota(
       command.alumnoId,
       command.grado,
