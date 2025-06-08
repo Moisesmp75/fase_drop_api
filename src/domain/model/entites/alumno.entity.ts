@@ -8,6 +8,9 @@ export class Alumno {
   private readonly edad: Edad;
   private readonly distrito: string;
   private readonly idUsuarioResponsable: string;
+  private ultimoGrado: number;
+  private ultimaSeccion: string;
+  private ultimaPrediccion: boolean;
 
   constructor(
     nombre: string,
@@ -25,6 +28,9 @@ export class Alumno {
     this.edad = new Edad(edad);
     this.distrito = distrito;
     this.idUsuarioResponsable = idUsuarioResponsable;
+    this.ultimoGrado = null;
+    this.ultimaSeccion = null;
+    this.ultimaPrediccion = null;
   }
 
   public getId(): string { return this.id; }
@@ -34,4 +40,11 @@ export class Alumno {
   public getEdad(): number { return this.edad.get(); }
   public getDistrito(): string { return this.distrito; }
   public getIdUsuarioResponsable(): string { return this.idUsuarioResponsable; }
+  public getUltimoGrado(): number { return this.ultimoGrado; }
+  public getUltimaSeccion(): string { return this.ultimaSeccion; }
+  public getUltimaPrediccion(): boolean { return this.ultimaPrediccion; }
+
+  public setUltimoGrado(grado: number): void { this.ultimoGrado = grado; }
+  public setUltimaSeccion(seccion: string): void { this.ultimaSeccion = seccion; }
+  public setUltimaPrediccion(prediccion: boolean): void { this.ultimaPrediccion = prediccion; }
 } 

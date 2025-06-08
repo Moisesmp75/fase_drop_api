@@ -41,7 +41,10 @@ export const GetAlumnosFunction = async (request: HttpRequest, context: Invocati
       apellido: alumno.getApellido(),
       dni: alumno.getDni(),
       edad: alumno.getEdad(),
-      distrito: alumno.getDistrito()
+      distrito: alumno.getDistrito(),
+      ultimoGrado: alumno.getUltimoGrado(),
+      ultimaSeccion: alumno.getUltimaSeccion(),
+      ultimaPrediccion: alumno.getUltimaPrediccion()
     }));
 
     return {
