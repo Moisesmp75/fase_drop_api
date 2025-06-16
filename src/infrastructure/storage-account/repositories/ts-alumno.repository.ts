@@ -26,11 +26,6 @@ export class TsAlumnoRepository implements AlumnoRepository {
     return idUsuarioResponsable;
   }
 
-  private generateRowKey(nombre: string, apellido: string): string {
-    const timestamp = new Date().getTime();
-    return `${nombre}_${apellido}_${timestamp}`;
-  }
-
   private async getNotasByAlumnoId(alumnoId: string): Promise<NotaEntity[]> {
     try {
       return await this.notaTableClient.query<NotaEntity>(`alumnoId eq '${alumnoId}'`);
@@ -41,17 +36,17 @@ export class TsAlumnoRepository implements AlumnoRepository {
   }
 
   async create(alumno: Alumno): Promise<Alumno> {
+    const alumnoId = uuidv4();
     const alumnoEntity: AlumnoEntity = {
       partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
-      rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
-      id: uuidv4(),
+      rowKey: alumnoId,
+      id: alumnoId,
       idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
       nombre: alumno.getNombre(),
       apellido: alumno.getApellido(),
       dni: alumno.getDni(),
       edad: alumno.getEdad(),
-      distrito: alumno.getDistrito(),
-      notas: []
+      distrito: alumno.getDistrito()
     };
 
     await this.tableClient.insert(alumnoEntity);
@@ -171,7 +166,7 @@ export class TsAlumnoRepository implements AlumnoRepository {
     try {
       const alumnoEntity: AlumnoEntity = {
         partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
-        rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
+        rowKey: alumno.getId(),
         id: alumno.getId(),
         idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
         nombre: alumno.getNombre(),
@@ -197,12 +192,14 @@ export class TsAlumnoRepository implements AlumnoRepository {
       }
 
       // Eliminar todas las notas asociadas al alumno
+      console.log(4);
       const notas = await this.getNotasByAlumnoId(id);
+      console.log(3);
       await Promise.all(notas.map(nota => this.notaTableClient.delete(nota)));
 
       const alumnoEntity: AlumnoEntity = {
         partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
-        rowKey: this.generateRowKey(alumno.getNombre(), alumno.getApellido()),
+        rowKey: alumno.getId(),
         id: alumno.getId(),
         idUsuarioResponsable: alumno.getIdUsuarioResponsable(),
         nombre: alumno.getNombre(),
@@ -211,7 +208,7 @@ export class TsAlumnoRepository implements AlumnoRepository {
         edad: alumno.getEdad(),
         distrito: alumno.getDistrito()
       };
-
+      console.log(alumnoEntity);
       await this.tableClient.delete(alumnoEntity);
     } catch (error) {
       throw new Error("Error al eliminar el alumno");
