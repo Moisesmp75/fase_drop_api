@@ -173,8 +173,7 @@ export class TsAlumnoRepository implements AlumnoRepository {
         apellido: alumno.getApellido(),
         dni: alumno.getDni(),
         edad: alumno.getEdad(),
-        distrito: alumno.getDistrito(),
-        notas: await this.getNotasByAlumnoId(alumno.getId())
+        distrito: alumno.getDistrito()
       };
 
       await this.tableClient.update(alumnoEntity);
