@@ -18,6 +18,8 @@ export class Nota {
   private readonly asistencia: NotaAcademica;
   private readonly conducta: NotaAcademica;
   private readonly prediccion: boolean;
+  private readonly comentario: string;
+  private readonly fechaPrediccion: Date;
 
   constructor(
     alumnoId: string,
@@ -34,7 +36,9 @@ export class Nota {
     asistencia: number,
     conducta: number,
     prediccion: boolean = false,
-    id: string = null
+    comentario: string = '',
+    id: string = null,
+    fechaPrediccion: Date = null
   ) {
     this.id = id;
     this.alumnoId = alumnoId;
@@ -49,6 +53,8 @@ export class Nota {
     this.asistencia = new NotaAcademica(asistencia);
     this.conducta = new NotaAcademica(conducta);
     this.prediccion = prediccion;
+    this.comentario = comentario;
+    this.fechaPrediccion = fechaPrediccion || new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Lima' }));
   }
 
   public getId(): string { return this.id; }
@@ -66,4 +72,6 @@ export class Nota {
   public getAsistencia(): number { return this.asistencia.get(); }
   public getConducta(): number { return this.conducta.get(); }
   public getPrediccion(): boolean { return this.prediccion; }
+  public getComentario(): string { return this.comentario; }
+  public getFechaPrediccion(): Date { return this.fechaPrediccion; }
 } 

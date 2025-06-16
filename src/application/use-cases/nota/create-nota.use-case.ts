@@ -84,7 +84,8 @@ export class CreateNotaUseCase {
       command.ingles,
       command.asistencia,
       command.conducta,
-      prediccion
+      prediccion,
+      command.comentario
     );
 
     return await this.notaRepository.create(nota);

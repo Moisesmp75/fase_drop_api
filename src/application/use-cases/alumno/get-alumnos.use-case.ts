@@ -36,15 +36,16 @@ export class GetAlumnosUseCase {
     const alumnos = await this.alumnoRepository.findByUsuarioResponsable(query.idUsuarioResponsable);
     
     const alumnosFiltrados = alumnos.filter(alumno => {
+      // Filtrar por distrito si se especifica
       if (query.distrito && alumno.getDistrito() !== query.distrito) return false;
+      
       return true;
     });
 
-    // Obtener las notas más recientes para cada alumno
+    // Establecer la última nota para cada alumno
     for (const alumno of alumnosFiltrados) {
-      const notas = await this.notaRepository.findByAlumnoId(alumno.getId());
-      if (notas.length > 0) {
-        // Ordenar por año y valor del período de forma descendente
+      const notas = alumno.getNotas();
+      if (notas && notas.length > 0) {
         const notasOrdenadas = notas.sort((a, b) => {
           if (a.getAnio() !== b.getAnio()) {
             return b.getAnio() - a.getAnio();
@@ -59,6 +60,17 @@ export class GetAlumnosUseCase {
       }
     }
 
-    return alumnosFiltrados;
+    const alumnosFinales = alumnosFiltrados.filter(alumno => {
+      const ultimoGrado = alumno.getUltimoGrado();
+      const ultimaSeccion = alumno.getUltimaSeccion();
+
+      if (query.grado && ultimoGrado !== query.grado) return false;
+
+      if (query.seccion && ultimaSeccion !== query.seccion) return false;
+
+      return true;
+    });
+
+    return alumnosFinales;
   }
 } 

@@ -2,19 +2,24 @@ import { AlumnoRepository } from "../../../domain/repositories/alumno.repository
 import { Alumno } from "../../../domain/model/entites/alumno.entity";
 import { AzureTableClient } from "./base.repository";
 import { AlumnoEntity } from "../entities/alumno.entity";
+import { NotaEntity } from "../entities/nota.entity";
 import { v4 as uuidv4 } from 'uuid';
+import { Nota } from "../../../domain/model/entites/nota.entity";
 
 export class TsAlumnoRepository implements AlumnoRepository {
   private readonly tableName;
   private readonly tableClient: AzureTableClient;
+  private readonly notaTableClient: AzureTableClient;
 
   constructor(accountName: string, accountKey: string) {
     this.tableName = 'alumnos';
     this.tableClient = new AzureTableClient(accountName, accountKey, this.tableName);
+    this.notaTableClient = new AzureTableClient(accountName, accountKey, 'notas');
   }
 
   async init(): Promise<void> {
     await this.tableClient.ensureTableExists();
+    await this.notaTableClient.ensureTableExists();
   }
 
   private generatePartitionKey(idUsuarioResponsable: string): string {
@@ -24,6 +29,15 @@ export class TsAlumnoRepository implements AlumnoRepository {
   private generateRowKey(nombre: string, apellido: string): string {
     const timestamp = new Date().getTime();
     return `${nombre}_${apellido}_${timestamp}`;
+  }
+
+  private async getNotasByAlumnoId(alumnoId: string): Promise<NotaEntity[]> {
+    try {
+      return await this.notaTableClient.query<NotaEntity>(`alumnoId eq '${alumnoId}'`);
+    } catch (error) {
+      console.error('Error al obtener notas del alumno:', error);
+      return [];
+    }
   }
 
   async create(alumno: Alumno): Promise<Alumno> {
@@ -36,7 +50,8 @@ export class TsAlumnoRepository implements AlumnoRepository {
       apellido: alumno.getApellido(),
       dni: alumno.getDni(),
       edad: alumno.getEdad(),
-      distrito: alumno.getDistrito()
+      distrito: alumno.getDistrito(),
+      notas: []
     };
 
     await this.tableClient.insert(alumnoEntity);
@@ -61,6 +76,8 @@ export class TsAlumnoRepository implements AlumnoRepository {
       }
 
       const alumnoEntity = result[0];
+      alumnoEntity.notas = await this.getNotasByAlumnoId(alumnoEntity.id);
+
       return new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
@@ -84,15 +101,20 @@ export class TsAlumnoRepository implements AlumnoRepository {
         return [];
       }
 
-      return result.map(alumnoEntity => new Alumno(
-        alumnoEntity.nombre,
-        alumnoEntity.apellido,
-        alumnoEntity.dni,
-        alumnoEntity.edad,
-        alumnoEntity.distrito,
-        alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.id
-      ));
+      const alumnos = await Promise.all(result.map(async alumnoEntity => {
+        alumnoEntity.notas = await this.getNotasByAlumnoId(alumnoEntity.id);
+        return new Alumno(
+          alumnoEntity.nombre,
+          alumnoEntity.apellido,
+          alumnoEntity.dni,
+          alumnoEntity.edad,
+          alumnoEntity.distrito,
+          alumnoEntity.idUsuarioResponsable,
+          alumnoEntity.id
+        );
+      }));
+
+      return alumnos;
     } catch (error) {
       throw new Error("Error al buscar alumnos por nombre y apellido");
     }
@@ -107,15 +129,39 @@ export class TsAlumnoRepository implements AlumnoRepository {
         return [];
       }
 
-      return result.map(alumnoEntity => new Alumno(
-        alumnoEntity.nombre,
-        alumnoEntity.apellido,
-        alumnoEntity.dni,
-        alumnoEntity.edad,
-        alumnoEntity.distrito,
-        alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.id
-      ));
+      const alumnos = await Promise.all(result.map(async alumnoEntity => {
+        alumnoEntity.notas = await this.getNotasByAlumnoId(alumnoEntity.id);
+        return new Alumno(
+          alumnoEntity.nombre,
+          alumnoEntity.apellido,
+          alumnoEntity.dni,
+          alumnoEntity.edad,
+          alumnoEntity.distrito,
+          alumnoEntity.idUsuarioResponsable,
+          alumnoEntity.id,
+          alumnoEntity.notas.map(nota => new Nota(
+            nota.alumnoId,
+            nota.grado as number,
+            nota.seccion,
+            nota.tipoPeriodo,
+            nota.valorPeriodo,
+            nota.anio,
+            nota.matematicas,
+            nota.comunicacion,
+            nota.ciencias_sociales,
+            nota.cta,
+            nota.ingles,
+            nota.asistencia,
+            nota.conducta,
+            nota.prediccion,
+            nota.comentario,
+            nota.id,
+            new Date(nota.fechaPrediccion)
+          ))
+        );
+      }));
+
+      return alumnos;
     } catch (error) {
       throw new Error("Error al buscar alumnos por usuario responsable");
     }
@@ -132,7 +178,8 @@ export class TsAlumnoRepository implements AlumnoRepository {
         apellido: alumno.getApellido(),
         dni: alumno.getDni(),
         edad: alumno.getEdad(),
-        distrito: alumno.getDistrito()
+        distrito: alumno.getDistrito(),
+        notas: await this.getNotasByAlumnoId(alumno.getId())
       };
 
       await this.tableClient.update(alumnoEntity);
@@ -148,6 +195,10 @@ export class TsAlumnoRepository implements AlumnoRepository {
       if (!alumno) {
         throw new Error("Alumno no encontrado");
       }
+
+      // Eliminar todas las notas asociadas al alumno
+      const notas = await this.getNotasByAlumnoId(id);
+      await Promise.all(notas.map(nota => this.notaTableClient.delete(nota)));
 
       const alumnoEntity: AlumnoEntity = {
         partitionKey: this.generatePartitionKey(alumno.getIdUsuarioResponsable()),
@@ -170,15 +221,19 @@ export class TsAlumnoRepository implements AlumnoRepository {
   async getAll(): Promise<Alumno[]> {
     try {
       const result = await this.tableClient.getAll<AlumnoEntity>();
-      return result.map(alumnoEntity => new Alumno(
-        alumnoEntity.nombre,
-        alumnoEntity.apellido,
-        alumnoEntity.dni,
-        alumnoEntity.edad,
-        alumnoEntity.distrito,
-        alumnoEntity.idUsuarioResponsable,
-        alumnoEntity.id
-      ));
+      const alumnos = await Promise.all(result.map(async alumnoEntity => {
+        alumnoEntity.notas = await this.getNotasByAlumnoId(alumnoEntity.id);
+        return new Alumno(
+          alumnoEntity.nombre,
+          alumnoEntity.apellido,
+          alumnoEntity.dni,
+          alumnoEntity.edad,
+          alumnoEntity.distrito,
+          alumnoEntity.idUsuarioResponsable,
+          alumnoEntity.id
+        );
+      }));
+      return alumnos;
     } catch (error) {
       throw new Error("Error al obtener todos los alumnos");
     }
@@ -193,6 +248,8 @@ export class TsAlumnoRepository implements AlumnoRepository {
       }
 
       const alumnoEntity = result[0];
+      alumnoEntity.notas = await this.getNotasByAlumnoId(alumnoEntity.id);
+
       return new Alumno(
         alumnoEntity.nombre,
         alumnoEntity.apellido,
@@ -203,7 +260,7 @@ export class TsAlumnoRepository implements AlumnoRepository {
         alumnoEntity.id
       );
     } catch (error) {
-      throw new Error("Error al buscar el alumno por DNI");
+      throw new Error("Error al buscar alumno por DNI");
     }
   }
 } 

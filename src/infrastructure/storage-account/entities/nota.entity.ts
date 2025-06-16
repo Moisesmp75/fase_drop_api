@@ -17,4 +17,6 @@ export interface NotaEntity extends BaseEntity {
   asistencia: number;
   conducta: number;
   prediccion: boolean;
+  comentario: string;
+  fechaPrediccion: string;
 } 

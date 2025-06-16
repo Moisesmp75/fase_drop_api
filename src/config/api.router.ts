@@ -6,6 +6,8 @@ import { GetAlumnoByIdFunction } from "../interfaces/functions/alumno/get-alumno
 import { GetAlumnosFunction } from "../interfaces/functions/alumno/get-alumnos.function";
 import { CreateNotaFunction } from "../interfaces/functions/nota/create-nota.function";
 import { GetNotasFunction } from "../interfaces/functions/nota/get-notas.function";
+import { DeleteNotaFunction } from "../interfaces/functions/nota/delete-nota.function";
+import { GetPredictionFunction } from "../interfaces/functions/nota/get-prediction.function";
 
 // Usuarios
 app.http('RegistrarUsuario', { methods: ['POST'], authLevel: 'anonymous', route: 'user', handler: CreateUserFunction });
@@ -17,4 +19,6 @@ app.http('ListarAlumnos', { methods: ['GET'], authLevel: 'anonymous', route: 'al
 // Notas
 app.http('RegistrarNotaAlumno', { methods: ['POST'], authLevel: 'anonymous', route: 'nota', handler: CreateNotaFunction });
 app.http('ObtenerNotasAlumnos', { methods: ['GET'], authLevel: 'anonymous', route: 'nota', handler: GetNotasFunction });
+app.http('EliminarNota', { methods: ['DELETE'], authLevel: 'anonymous', route: 'nota/{alumnoId}/{notaId}', handler: DeleteNotaFunction });
+app.http('ObtenerPrediccion', { methods: ['POST'], authLevel: 'anonymous', route: 'nota/prediction', handler: GetPredictionFunction });
 

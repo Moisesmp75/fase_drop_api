@@ -90,7 +90,9 @@ export class TsNotaRepository implements NotaRepository {
       ingles: nota.getIngles(),
       asistencia: nota.getAsistencia(),
       conducta: nota.getConducta(),
-      prediccion: nota.getPrediccion()
+      prediccion: nota.getPrediccion(),
+      comentario: nota.getComentario(),
+      fechaPrediccion: nota.getFechaPrediccion().toISOString()
     };
 
     await this.tableClient.insert(notaEntity);
@@ -110,6 +112,7 @@ export class TsNotaRepository implements NotaRepository {
       notaEntity.asistencia,
       notaEntity.conducta,
       notaEntity.prediccion,
+      notaEntity.comentario,
       notaEntity.id
     );
   }
@@ -138,6 +141,7 @@ export class TsNotaRepository implements NotaRepository {
         notaEntity.asistencia,
         notaEntity.conducta,
         notaEntity.prediccion,
+        notaEntity.comentario,
         notaEntity.id
       );
     } catch (error) {
@@ -169,6 +173,7 @@ export class TsNotaRepository implements NotaRepository {
         notaEntity.asistencia,
         notaEntity.conducta,
         notaEntity.prediccion,
+        notaEntity.comentario,
         notaEntity.id
       ));
     } catch (error) {
@@ -221,6 +226,7 @@ export class TsNotaRepository implements NotaRepository {
         notaEntity.asistencia,
         notaEntity.conducta,
         notaEntity.prediccion,
+        notaEntity.comentario,
         notaEntity.id
       ));
     } catch (error) {
@@ -247,7 +253,9 @@ export class TsNotaRepository implements NotaRepository {
         ingles: nota.getIngles(),
         asistencia: nota.getAsistencia(),
         conducta: nota.getConducta(),
-        prediccion: nota.getPrediccion()
+        prediccion: nota.getPrediccion(),
+        comentario: nota.getComentario(),
+        fechaPrediccion: nota.getFechaPrediccion().toISOString()
       };
 
       await this.tableClient.update(notaEntity);
@@ -281,7 +289,9 @@ export class TsNotaRepository implements NotaRepository {
         ingles: nota.getIngles(),
         asistencia: nota.getAsistencia(),
         conducta: nota.getConducta(),
-        prediccion: nota.getPrediccion()
+        prediccion: nota.getPrediccion(),
+        comentario: nota.getComentario(),
+        fechaPrediccion: null
       };
 
       await this.tableClient.delete(notaEntity);

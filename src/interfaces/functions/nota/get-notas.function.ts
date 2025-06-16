@@ -72,7 +72,8 @@ export const GetNotasFunction = async (request: HttpRequest, context: Invocation
       ingles: nota.getIngles(),
       asistencia: nota.getAsistencia(),
       conducta: nota.getConducta(),
-      prediccion: nota.getPrediccion()
+      prediccion: nota.getPrediccion(),
+      comentario: nota.getComentario()
     }));
 
     return {

@@ -7,5 +7,5 @@ export interface NotaRepository {
   findByAlumnoId(alumnoId: string): Promise<Nota[]>;
   findByQuery(query: GetNotasQuery): Promise<Nota[]>;
   update(nota: Nota): Promise<Nota>;
-  delete(id: string): Promise<void>;
+  delete(id: string, alumnoId: string): Promise<void>;
 } 

@@ -1,4 +1,5 @@
 import { Alumno } from "../model/entites/alumno.entity";
+import { Nota } from "../model/entites/nota.entity";
 
 export interface AlumnoRepository {
   create(alumno: Alumno): Promise<Alumno>;

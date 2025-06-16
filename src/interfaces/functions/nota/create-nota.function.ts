@@ -85,7 +85,9 @@ export const CreateNotaFunction = async (request: HttpRequest, context: Invocati
           ingles: nota.getIngles(),
           asistencia: nota.getAsistencia(),
           conducta: nota.getConducta(),
-          prediccion: nota.getPrediccion()
+          prediccion: nota.getPrediccion(),
+          comentario: nota.getComentario(),
+          fechaPrediccion: nota.getFechaPrediccion().toISOString()
         }
       }
     };

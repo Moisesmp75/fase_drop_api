@@ -15,4 +15,5 @@ export interface CreateNotaCommand {
   asistencia: number;
   conducta: number;
   prediccion?: boolean;
+  comentario?: string;
 } 
